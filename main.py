@@ -10,14 +10,23 @@ from src.services.exercise_service import ExerciseService
 
 app = FastAPI()
 service = ExerciseService(exercise_manager)
-templates = Jinja2Templates(directory="src/templates")
+render = Jinja2Templates(directory="src/templates").TemplateResponse
+
+app.mount("/static", StaticFiles(directory="src/static"), name="static")
+
+
+@app.get("/")
+async def get(request: Request):
+    """Вьюшка для главной – все упражнения"""
+    all_exercises = service.get_all_exercises()
+    return render("index.html", {"request": request, "exercises": all_exercises})
 
 
 @app.get("/run/{exercise_id}")
 async def get(request: Request, exercise_id: int):
     """Вьюшка для отображения упражнения"""
     exercise: Exercise = service.get_exercise(exercise_id)
-    return templates.TemplateResponse("index.html", {"request": request, "exercise": exercise, "result": None, "attempt_check": None})
+    return render("exercise.html", {"request": request, "exercise": exercise, "result": None, "attempt_check": None})
 
 
 @app.post("/run/{exercise_id}")
@@ -41,8 +50,5 @@ async def run(request: Request, exercise_id: int):
         "attempt": attempt,
     }
 
-    return templates.TemplateResponse("index.html", context)
+    return render("exercise.html", context)
 
-
-# Добавляем статику на будущее
-app.mount("/static", StaticFiles(directory="src/static"), name="static")

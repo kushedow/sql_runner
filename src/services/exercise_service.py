@@ -18,6 +18,11 @@ class ExerciseService:
     def __init__(self, manager):
         self.manager: ExerciseManager = manager
 
+    def get_all_exercises(self) -> dict[str: Exercise]:
+        """Все доступные упражнения"""
+        logger.info(f"Получаем все упражнения")
+        return self.manager.get_all_exercises()
+
     def get_exercise(self, pk: int):
         """Получить упражнение по его pk"""
         logger.info(f"Получаем упражнение {pk}")

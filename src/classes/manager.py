@@ -5,7 +5,6 @@ from src.config import SHEET_ID
 
 @dataclass
 class Database:
-
     """Базы данных для упражнений"""
 
     database_name: str  # ключ для базы данных
@@ -16,7 +15,6 @@ class Database:
 
 @dataclass
 class Exercise:
-
     """Базы данных для упражнений"""
 
     pk: int  # номер упражнения
@@ -24,6 +22,7 @@ class Exercise:
     hint: str  # подсказка
     instruction: str  # текст инструкции
     database_name: str  # имя базы данных для линковки с исходниками БД
+    category_code: str # имя категории
 
     source_code: str  # исходный код, который будет в редакторе
     solution_code: str  # код решения для проверки результатов
@@ -37,17 +36,25 @@ class Exercise:
         return asdict(self)
 
 
-class ExerciseManager:
+@dataclass
+class Category:
+    cat_code: str
+    cat_title: str
+    cat_description: str
 
+
+class ExerciseManager:
     """Обертка упражнения и базы данных из гугл-документов"""
 
     def __init__(self, sheet_id):
         self.gc = gspread.service_account()
         self.file = self.gc.open_by_key(sheet_id)
 
-        self.sheet_databases = self.file.get_worksheet(1)  # ссылка на интерфейс таблицы базы данных
         self.sheet_exercises = self.file.get_worksheet(0)  # ссылка на интерфейс таблицы упражнений
+        self.sheet_databases = self.file.get_worksheet(1)  # ссылка на интерфейс таблицы баз данных
+        self.sheet_cats = self.file.get_worksheet(2)  # ссылка на интерфейс таблицы категорий
 
+        self.categories = self._load_categories()
         self.exercises = self._load_exercises()
 
     def _load_databases(self) -> dict[str: Database]:
@@ -66,11 +73,35 @@ class ExerciseManager:
         for ex in exercises.values():
             ex.database = databases.get(ex.database_name)
 
+        # досыпаем к каждому заданию категорию
+
         return exercises
+
+    def _load_categories(self) -> dict[str: Category]:
+        """Загружает список категорий """
+        records = self.sheet_cats.get_all_records()
+        cats = {cat["cat_code"]: Category(**cat) for cat in records}
+
+    # интерфейсные методы
+
+    # Упражнения
+
+    def get_all_exercises(self) -> dict[str: Exercise]:
+        return self.exercises
 
     def get_exercise(self, pk: int) -> Exercise | None:
         """Достает из кеша упражнение"""
         return self.exercises.get(pk, None)
+
+    # Категории
+
+    def get_categories(self, cat_code: str) -> dict[str:Category]:
+        """Возвращает все категории"""
+        cats = self.categories
+
+    def get_category(self, cat_code: str) -> Category | None:
+        """Возвращает категорию по ее ключу"""
+        return self.categories.get(cat_code)
 
 
 # создаем экземпляр интерфейса

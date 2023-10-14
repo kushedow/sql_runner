@@ -18,3 +18,5 @@
 ```pip install -r requirements.txt```
 
 ```./runserver.sh```
+
+```Перейти на /run/1```

@@ -2,80 +2,24 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Задание {{ exercise.pk }} – {{ exercise.title }}</title>
-    <script src="/static/style.css"></script>
+    <title>SQL Runner – все задачи</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script> <!-- 60 kb -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js"></script> <!-- 20 kb -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-sql.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism.min.css" rel="stylesheet" />
-
-    <style>
-
-        body { background-color: #f9f9f9; font-family: Roboto, Arial; }
-        details { padding: .3em 0; cursor: pointer;}
-
-        .btn { background-color: #444; padding: 0.75em 1.5em; border: none; border-radius: 6px; color: #fff; font-size: 1em; cursor: pointer; }
-        .alert { background-color: #eee; padding: .7em; border-radius: 6px; margin: .5em 0;}
-        .btn:hover { background-color: #555;}
-
-        #sql_editor { padding: 1em; margin: 1.5em 0; }
-        #hidden_editor { display: none;}
-
-    </style>
-
+    <link href="/static/style.css" rel="stylesheet" />
 </head>
 <body>
 
-    <form class="container mt-5" action="/run/{{exercise.pk}}" method="POST">
-
-        <h2>{{ exercise.pk }}: {{exercise.title}}</h2>
-        <p>{{exercise.instruction | safe}}</p>
-
-        <details>
-          <summary>Показать таблицы</summary>
-          <p><pre>{{ exercise.database.database_structure}}</pre></p>
-        </details>
-
-        <details>
-          <summary>Подсказка</summary>
-          <p>{{ exercise.hint }}</p>
-        </details>
-
-        {% if result.errors %}
-            <div class="alert" role="alert">  {{ result.errors }}</div>
-        {% endif %}
-
-        {% if attempt_check %}
-           <div class="alert" role="alert">  {{ attempt_check.message }}</div>
-        {% endif %}
-
-        {% if result!= None %}
-              <pre>{{result.pretty}}</pre>
-        {% endif %}
-
-        <!-- это поле мы покажем -->
-        <code id="sql_editor" class="language-sql" contenteditable="true" style="outline: None; display: block;">{% if attempt %}{{ attempt }}{% else %}{{exercise.source_code}}{% endif %}</code>
-
-        <!-- это поле мы скроем -->
-        <textarea id="hidden_editor" class="language-sql" name="attempt" >{% if attempt %}{{ attempt }}{% else %}{{exercise.source_code}}{% endif %}</textarea>
-
-        <input type="submit" class="btn btn-primary" value="Запустить">
-
-    </form>
+    <div class="container">
+        <h3>SQL Runner – все задачи</h3>
+        <nav>
+        {% for ex in exercises.values() %}
+           <a href="/run/{{ ex.pk }}" class="link">{{ex.pk}}: {{ ex.title }}</a>
+        {% endfor %}
+        </nav>
+    </div>
 
 </body>
 
 <script language="JavaScript">
-
-sql_editor = document.querySelector("#sql_editor")
-hidden_editor = document.querySelector("#hidden_editor")
-
-sql_editor.addEventListener("input", function() {
-
-    hidden_editor.innerHTML = sql_editor.innerText
-
-}, false);
-
 
 </script>
 </html>

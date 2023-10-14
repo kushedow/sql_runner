@@ -1,0 +1,30 @@
+body {
+  background-color: #f9f9f9;
+  font-family: Roboto, Arial;
+}
+
+h3 { margin: 0.3em 0; }
+
+
+details {
+  padding: .3em 0;
+  cursor: pointer;
+}
+
+.container { margin: 1em 1em;}
+.btn { background-color: #444; padding: 0.75em 1.5em; border: none; border-radius: 6px; color: #fff; font-size: 1em; cursor: pointer; }
+.alert { background-color: #eee; padding: .7em; border-radius: 6px; margin: .5em 0;}
+.btn:hover { background-color: #555;}
+.link {
+    display: block;
+    color: #444;
+    margin: .5em 0;
+}
+.link-icon {
+    text-decoration: none;
+}
+
+
+
+#sql_editor { padding: 1em; margin: 1.5em 0; }
+#hidden_editor { display: none;}

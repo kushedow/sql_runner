@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Задание {{ exercise.pk }} – {{ exercise.title }}</title>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script> <!-- 60 kb -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js"></script> <!-- 20 kb -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-sql.min.js"></script>
+    <link href="/static/style.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism.min.css" rel="stylesheet" />
+
+</head>
+<body>
+
+
+    <main class="container">
+
+        <a href="/" class="link-icon">⬅️</a>
+        <h3>{{ exercise.pk }}: {{exercise.title}}</h3>
+        <p>{{exercise.instruction | safe}}</p>
+
+        <details>
+          <summary>Показать таблицы</summary>
+          <p><pre>{{ exercise.database.database_structure}}</pre></p>
+        </details>
+
+        <details>
+          <summary>Подсказка</summary>
+          <p>{{ exercise.hint }}</p>
+        </details>
+
+        {% if result.errors %}
+            <div class="alert" role="alert">  {{ result.errors }}</div>
+        {% endif %}
+
+        {% if attempt_check %}
+           <div class="alert" role="alert">  {{ attempt_check.message }}</div>
+        {% endif %}
+
+        {% if result!= None %}
+              <pre>{{result.pretty}}</pre>
+        {% endif %}
+
+        <form action="/run/{{exercise.pk}}" method="POST">
+
+            <!-- это поле мы покажем -->
+            <code id="sql_editor" class="language-sql" contenteditable="true" style="outline: None; display: block;">{% if attempt %}{{ attempt }}{% else %}{{exercise.source_code}}{% endif %}</code>
+
+            <!-- это поле мы скроем -->
+            <textarea id="hidden_editor" class="language-sql" name="attempt" >{% if attempt %}{{ attempt }}{% else %}{{exercise.source_code}}{% endif %}</textarea>
+
+            <input type="submit" class="btn btn-primary" value="Запустить">
+
+        </form>
+
+        <p></p>
+        <details>
+          <summary>Показать решение</summary>
+          <code class="language-sql">{{ exercise.solution_code }}</code>
+        </details>
+
+    </main>
+</body>
+
+<script language="JavaScript">
+
+sql_editor = document.querySelector("#sql_editor")
+hidden_editor = document.querySelector("#hidden_editor")
+
+sql_editor.addEventListener("input", function() {
+    hidden_editor.innerHTML = sql_editor.innerText
+}, false);
+
+</script>
+</html>
