@@ -11,6 +11,10 @@ details {
   cursor: pointer;
 }
 
+code span.token {
+  font-size: 14px;
+}
+
 .container { margin: 1em 1em;}
 .btn { background-color: #444; padding: 0.75em 1.5em; border: none; border-radius: 6px; color: #fff; font-size: 1em; cursor: pointer; }
 .alert { background-color: #eee; padding: .7em; border-radius: 6px; margin: .5em 0;}
