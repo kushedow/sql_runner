@@ -18,6 +18,10 @@ class ExerciseService:
     def __init__(self, manager):
         self.manager: ExerciseManager = manager
 
+    def reload_manager(self):
+        logger.info(f"Выгружаем заново все таблицы")
+        self.manager.load_all()
+
     def get_all_exercises(self) -> dict[str: Exercise]:
         """Все доступные упражнения"""
         logger.info(f"Получаем все упражнения")

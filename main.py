@@ -2,6 +2,7 @@ from dataclasses import asdict
 
 from fastapi import FastAPI, Request
 from starlette.datastructures import FormData
+from starlette.responses import HTMLResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
@@ -20,6 +21,12 @@ async def get(request: Request):
     """Вьюшка для главной – все упражнения"""
     all_exercises = service.get_all_exercises()
     return render("index.html", {"request": request, "exercises": all_exercises})
+
+
+@app.get("/reload")
+async def reload(request: Request):
+    service.reload_manager()
+    return HTMLResponse(content="Reloaded")
 
 
 @app.get("/run/{exercise_id}")

@@ -50,6 +50,14 @@ class ExerciseManager:
         self.gc = gspread.service_account()
         self.file = self.gc.open_by_key(sheet_id)
 
+        self.sheet_exercises, self.sheet_databases, self.sheet_cats = None, None, None
+        self.categories, self.exercises = None, None
+
+        self.load_all()
+
+    def load_all(self):
+        """Загружает данные из всех таблиц. Может принудительно перезагружаться"""
+
         self.sheet_exercises = self.file.get_worksheet(0)  # ссылка на интерфейс таблицы упражнений
         self.sheet_databases = self.file.get_worksheet(1)  # ссылка на интерфейс таблицы баз данных
         self.sheet_cats = self.file.get_worksheet(2)  # ссылка на интерфейс таблицы категорий
@@ -81,6 +89,8 @@ class ExerciseManager:
         """Загружает список категорий """
         records = self.sheet_cats.get_all_records()
         cats = {cat["cat_code"]: Category(**cat) for cat in records}
+        return cats
+
 
     # интерфейсные методы
 
