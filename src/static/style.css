@@ -18,7 +18,9 @@ code span.token {
 .container { margin: 1em 1em;}
 .btn { background-color: #444; padding: 0.75em 1.5em; border: none; border-radius: 6px; color: #fff; font-size: 1em; cursor: pointer; }
 .alert { background-color: #eee; padding: .7em; border-radius: 6px; margin: .5em 0;}
+.card { background-color: #eee; padding: 1em; margin-top: 0.5em; border-radius: 6px;}
 .btn:hover { background-color: #555;}
+
 .link {
     display: block;
     color: #444;

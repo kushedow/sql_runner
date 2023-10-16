@@ -2,7 +2,7 @@ from dataclasses import asdict
 
 from fastapi import FastAPI, Request
 from starlette.datastructures import FormData
-from starlette.responses import HTMLResponse
+from starlette.responses import HTMLResponse, JSONResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
@@ -12,7 +12,6 @@ from src.services.exercise_service import ExerciseService
 app = FastAPI()
 service = ExerciseService(exercise_manager)
 render = Jinja2Templates(directory="src/templates").TemplateResponse
-
 app.mount("/static", StaticFiles(directory="src/static"), name="static")
 
 
@@ -58,4 +57,18 @@ async def run(request: Request, exercise_id: int):
     }
 
     return render("exercise.html", context)
+
+
+@app.get("/explain/{exercise_pk}")
+async def explain(request: Request, exercise_pk: int) -> JSONResponse:
+    """Вьюшка для объяснения решений задач через OPEN AI"""
+
+    explanation = service.get_explanation(exercise_pk)
+
+    if explanation is not None:
+        return JSONResponse({"message": explanation})
+
+    return JSONResponse({"message": "No explanation was created or exercise not found"}, 400)
+
+
 

@@ -17,7 +17,10 @@
     <main class="container">
 
         <a href="/" class="link-icon">⬅️</a>
-        <h3>{{ exercise.pk }}: {{exercise.title}}</h3>
+        <h3>
+            <span id="exercise_pk">{{ exercise.pk }}</span>:
+            {{exercise.title}}
+        </h3>
         <p>{{exercise.instruction | safe}}</p>
 
         <details>
@@ -60,6 +63,11 @@
           <code class="language-sql">{{ exercise.solution_code }}</code>
         </details>
 
+        <details>
+          <summary id="explanation-trigger">Объяснить решение</summary>
+          <div id="explanation-result" class="alert">Загружаем, может потребоваться несколько секунд ... </div>
+        </details>
+
     </main>
 </body>
 
@@ -68,9 +76,22 @@
 sql_editor = document.querySelector("#sql_editor")
 hidden_editor = document.querySelector("#hidden_editor")
 
+explanation_trigger = document.querySelector("#explanation-trigger")
+explanation_result = document.querySelector("#explanation-result")
+exercise_pk = document.querySelector("#exercise_pk").innerText
+
 sql_editor.addEventListener("input", function() {
     hidden_editor.innerHTML = sql_editor.innerText
 }, false);
+
+explanation_trigger.addEventListener("click", async function() {
+
+    response = await fetch("/explain/"+exercise_pk);
+    explanation = await response.json();
+    console.log(explanation)
+    explanation_result.innerHTML = explanation.message.replace(/\n/g, "<br />");
+
+})
 
 </script>
 </html>

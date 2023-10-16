@@ -5,7 +5,7 @@ from src.config import SHEET_ID
 
 @dataclass
 class Database:
-    """Базы данных для упражнений"""
+    """Модель Базы данных для упражнений"""
 
     database_name: str  # ключ для базы данных
     database_tables: str  # код для создания таблиц
@@ -15,7 +15,7 @@ class Database:
 
 @dataclass
 class Exercise:
-    """Базы данных для упражнений"""
+    """Модель упражнений"""
 
     pk: int  # номер упражнения
     title: str  # название упражнения
@@ -26,6 +26,7 @@ class Exercise:
 
     source_code: str  # исходный код, который будет в редакторе
     solution_code: str  # код решения для проверки результатов
+    explanation: str = None
 
     database: Database = None  # ссылка на базу данных
 
@@ -38,6 +39,7 @@ class Exercise:
 
 @dataclass
 class Category:
+    """  Модель категории упражнений"""
     cat_code: str
     cat_title: str
     cat_description: str

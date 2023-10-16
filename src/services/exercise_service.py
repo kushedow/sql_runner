@@ -4,6 +4,7 @@ from loguru import logger
 
 from src.classes.runner import Runner, RunnerResult
 from src.classes.manager import Exercise, ExerciseManager
+from src.classes.ai_manager import AIManager
 
 
 @dataclass
@@ -16,7 +17,9 @@ class CheckResult:
 class ExerciseService:
 
     def __init__(self, manager):
+
         self.manager: ExerciseManager = manager
+        self.ai_manager: AIManager = AIManager()
 
     def reload_manager(self):
         logger.info(f"Выгружаем заново все таблицы")
@@ -32,6 +35,21 @@ class ExerciseService:
         logger.info(f"Получаем упражнение {pk}")
         exercise: Exercise = self.manager.get_exercise(pk)
         return exercise
+
+    def get_explanation(self, exercise_pk):
+        """Объяснить упражнение с помощью Chat GPT"""
+        # Получаем упражнение
+        exercise: Exercise = self.get_exercise(exercise_pk)
+        # Объясняем упражнение
+
+        if exercise is None:
+            return
+
+        if exercise.explanation is not None:
+            return exercise.explanation
+
+        exercise.explanation = self.ai_manager.get_explanation(exercise)
+        return exercise.explanation
 
     def run_attempt(self, pk, attempt):
         """Проверить решение ученика по его pk"""
