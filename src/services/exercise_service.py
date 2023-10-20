@@ -36,10 +36,10 @@ class ExerciseService:
         exercise: Exercise = self.manager.get_exercise(pk)
         return exercise
 
-    def get_explanation(self, exercise_pk):
+    async def get_explanation(self, exercise_pk):
         """Объяснить упражнение с помощью Chat GPT"""
         # Получаем упражнение
-        exercise: Exercise = self.get_exercise(exercise_pk)
+        exercise =  self.get_exercise(exercise_pk)
         # Объясняем упражнение
 
         if exercise is None:
@@ -48,7 +48,7 @@ class ExerciseService:
         if exercise.explanation is not None:
             return exercise.explanation
 
-        exercise.explanation = self.ai_manager.get_explanation(exercise)
+        exercise.explanation = await self.ai_manager.get_explanation(exercise)
         return exercise.explanation
 
     def run_attempt(self, pk, attempt):

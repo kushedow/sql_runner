@@ -63,7 +63,7 @@ async def run(request: Request, exercise_id: int):
 async def explain(request: Request, exercise_pk: int) -> JSONResponse:
     """Вьюшка для объяснения решений задач через OPEN AI"""
 
-    explanation = service.get_explanation(exercise_pk)
+    explanation = await service.get_explanation(exercise_pk)
 
     if explanation is not None:
         return JSONResponse({"message": explanation})
